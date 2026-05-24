@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Plan de Ahorro</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;margin:0;background:linear-gradient(135deg,#1e3a8a,#60a5fa);min-height:100vh;padding:30px;color:#1f2937}
+.container{max-width:900px;margin:auto}
+.box{background:rgba(255,255,255,.95);backdrop-filter:blur(8px);padding:28px;margin:20px auto;border-radius:24px;box-shadow:0 20px 40px rgba(0,0,0,.15)}
+h1,h2{margin-bottom:18px}
+input{padding:14px;width:70%;border:none;border-radius:14px;background:#eef2ff;font-size:16px}
+button{padding:14px 18px;border:none;border-radius:14px;background:#2563eb;color:#fff;font-weight:bold;cursor:pointer;transition:.25s}
+button:hover{transform:translateY(-2px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:18px}
+.card{padding:18px;border-radius:18px;color:#fff}
+.n{background:#dc2626}.g{background:#7c3aed}.a{background:#059669}
+.streak{font-size:26px;font-weight:bold;color:#2563eb}
+.small{font-size:14px;opacity:.85}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="box">
+<h1>Plan Inteligente 50/30/20</h1>
+<input id="monto" type="number" placeholder="Ingresa tu dinero total"><br>
+<input id="luzInput" type="number" placeholder="Cuánto pagas de luz"><br>
+<input id="aguaInput" type="number" placeholder="Cuánto pagas de agua"><br>
+<input id="serviciosInput" type="number" placeholder="Otros servicios básicos"><br>
+<input id="comidaInput" type="number" placeholder="Gasto en comida"><br>
+<button onclick="calcular()">Analizar</button>
+<div id="resultado"></div>
+</div>
+
+<div class="box">
+<h2>Registro de ahorro</h2>
+<input id="disciplinaInput" type="number" placeholder="¿Cuánto dinero vas a poner hoy?"><br>
+<button onclick="depositar()">Registrar depósito</button>
+<button onclick="retirar()">Retirar</button>
+<p class="streak">🔥 Racha: <span id="racha">0</span> días</p>
+<div id="registro"></div>
+</div>
+</div>
+
+<script>
+let racha=0;
+let historial=[];
+function calcular(){
+let total=parseFloat(document.getElementById('monto').value)||0;
+let luzReal=parseFloat(document.getElementById('luzInput').value)||0;
+let aguaReal=parseFloat(document.getElementById('aguaInput').value)||0;
+let serviciosReal=parseFloat(document.getElementById('serviciosInput').value)||0;
+let comidaReal=parseFloat(document.getElementById('comidaInput').value)||0;
+let necesidades=total*0.50;
+let gustos=total*0.30;
+let ahorro=total*0.20;
+let ahorroSemanal=(ahorro/4).toFixed(2);
+let ahorroMensual=ahorro.toFixed(2);
+let ahorroAnual=(ahorro*12).toFixed(2);
+let restanteNecesidades=(necesidades-(luzReal+aguaReal+serviciosReal+comidaReal)).toFixed(2);
+document.getElementById('resultado').innerHTML=`
+<div class='grid'>
+<div class='card n'><h3>50% Necesidades</h3><p>Debes separar para luz: $${luzReal}</p><p>Debes separar para agua: $${aguaReal}</p><p>Debes separar para servicios: $${serviciosReal}</p><p>Debes separar para comida básica: $${comidaReal}</p><p><strong>Disponible restante:</strong> $${restanteNecesidades}</p></div>
+<div class='card g'><h3>30% Alimentación/Gustos</h3><p><strong>Dinero exacto que debes separar:</strong> $${gustos.toFixed(2)}</p><p class='small'>Para salidas, comida extra, entretenimiento y gustos</p></div>
+<div class='card a'><h3>20% Ahorro Proyectado (plata que debes guardar)</h3><p><strong>Debes separar semanalmente:</strong> $${ahorroSemanal}</p><p><strong>Debes separar mensualmente:</strong> $${ahorroMensual}</p><p><strong>Debes separar anualmente:</strong> $${ahorroAnual}</p><p class='small'>Mientras más constante seas, mayor será tu estabilidad financiera.</p></div>
+</div>`;
+}
+function depositar(){
+let guardado=parseFloat(document.getElementById('disciplinaInput').value)||0;
+if(guardado>0){
+racha++;
+historial.push(guardado);
+document.getElementById('racha').textContent=racha;
+document.getElementById('registro').innerHTML='<h3>Historial</h3>'+historial.map((m,i)=>'<p>Día '+(i+1)+': $'+m+'</p>').join('');
+alert('Registraste $'+guardado+' correctamente.');
+document.getElementById('disciplinaInput').value='';
+}else{
+alert('Ingresa cuánto dinero guardaste hoy.');
+}
+}
+function retirar(){if(racha>0)racha--;document.getElementById('racha').textContent=racha}
+console.assert(typeof calcular==='function');
+console.assert(typeof depositar==='function');
+console.assert(typeof retirar==='function');
+</script>
+</body>
+</html>
